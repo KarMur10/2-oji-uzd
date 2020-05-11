@@ -1,162 +1,97 @@
-#include <iostream>
-#include <iomanip>
-#include <time.h>
-#include <stdlib.h>
-#include <vector>
-#include <fstream>
-#include <string>
-
-using namespace std;
-
-struct Studentas {
-    string vardas;
-    string pavarde;
-    vector<int> nd;
-    int egz;
-};
-
-int inputType ();
-int studentuSk ();
-vector<Studentas> StudInput (char inputType);
-vector<int> ndInput ();
-int egzInput();
-double ndVidurkis(vector<int> nd);
-double Mediana(vector<int> nd, double egz);
-double Galutinis(double vidurkis, int egz);
-void Output (vector<Studentas> Studentai);
+#include "main.h"
 
 int main()
 {
     char ipType;
-    //srand(time(NULL));
     ipType = inputType();
     Output(StudInput(ipType));
     return 0;
 }
 
-int inputType ()
+char inputType ()
 {
     char inputType;
     cout << "Ar duomenys bus ivesti po viena ar nuskaitomi is failo?\nJei ivesite ranka iveskite: 'y', jei is failo: 'n'\n";
-    cin >> inputType;
-    while (inputType != 'y' && inputType != 'n')
+    while(inputType || !inputType)
     {
-        cin.clear();
-        cin.ignore();
-        cout << "Klaida: iveskite 'y' jei duomenis ivesite ranka, jei jie bus nuskaitomi is failo: 'n'\n";
         cin >> inputType;
+        try
+        {
+            if(inputType != 'y' && inputType != 'n')
+            {
+                throw inputType;
+            }
+            return inputType;
+        }
+            catch(char badInput)
+            {
+                cout << "Klaida: iveskite 'y' jei duomenis ivesite ranka, jei jie bus nuskaitomi is failo: 'n'\n";
+            }
     }
-    return inputType;
+    return 0;
 }
 
 int studentuSk ()
 {
     int studSk;
     cout << "Iveskite studentu skaiciu\n";
-    cin >> studSk;
-    while (studSk < 1 || cin.fail())
+    while(studSk || !studSk)
     {
-        cin.clear();
-        cin.ignore();
-        cout << "Klaida: studentu skaicius turi buti teigiamas skaicius.\n";
         cin >> studSk;
-    }
-    return studSk;
-}
-
-vector<Studentas> StudInput (char inputType)
-{
-    vector<Studentas> Studentai;
-    int egz;
-    string vardas, pavarde;
-    vector<int> nd;
-    if (inputType == 'y')
-    {
-        int studSk;
-        studSk = studentuSk();
-        for(int i = 0; i < studSk; i++)
+        try
         {
-            cout << "Iveskite studento varda\n";
-            cin >> vardas;
-            cout << "Iveskite studento pavarde\n";
-            cin >> pavarde;
-            cout << "Iveskite sio studento namu darbu rezultatus. Ivedus visus rezultatus iveskite 0\n";
-            nd = ndInput();
-            cout << "Iveskite sio studento egzamino rezultata.\n";
-            egz = egzInput();
-            Studentai.push_back({vardas, pavarde, nd, egz});
+            if(studSk < 1 || cin.fail())
+                throw studSk;
+            return studSk;
+        }
+        catch(int badSk)
+        {
+        cout << "Klaida: turite ivesti teigiama skaiciu\n";
         }
     }
-    else
-    {
-        int ndcount = 0, tempNd;
-        string temp;
-        ifstream file;
-        file.open("input.txt");
-        file >> vardas;
-        file >> pavarde;
-        while(temp != "Egz.")
-        {
-            file >> temp;
-            if (temp.at(0) == 'N')
-                ndcount++;
-            else
-                break;
-        }
-        while(!file.eof())
-        {
-            file >> vardas;
-            file >> pavarde;
-            for (int i = 0; i < ndcount; i++)
-            {
-                file >> tempNd;
-                nd.push_back(tempNd);
-            }
-            file >> egz;
-            Studentai.push_back({vardas, pavarde, nd, egz});
-            if(file.eof()) break;
-        }
-        file.close();
-    }
-    return Studentai;
+    return 0;
 }
 
 vector<int> ndInput ()
 {
     int tempnd;
     vector<int> nd;
-    while(tempnd != 0)
+    while(tempnd || !tempnd)
     {
         cin >> tempnd;
-        if (tempnd < 0 || tempnd > 10 || cin.fail())
+        try
         {
-            cin.ignore();
-            cout << "Klaida: namu darbo rezultatas turi buti tarp 1 ir 10\n";
+            if(tempnd < 0 || tempnd > 10 || cin.fail())
+                throw tempnd;
+            if (tempnd == 0) break;
+            else nd.push_back(tempnd);
         }
-        else if (tempnd == 0)
+        catch(int badnd)
         {
-            break;
-        }
-        else
-        {
-            nd.push_back(tempnd);
+            cout << "Klaida: namu darbo rezultatas tur buti tarp 1 ir 10\n";
         }
     }
-
     return nd;
 }
 
 int egzInput()
 {
     int egz;
-    cin >> egz;
-    while (egz < 0 || egz > 10 || cin.fail())
+    while(egz || !egz)
     {
-        cin.ignore();
-        cout << "Klaida: egzamino rezultatas turi buti tarp 1 ir 10\n";
         cin >> egz;
+        try
+        {
+            if(egz < 1 || egz > 10 || cin.fail())
+                throw egz;
+            return egz;
+        }
+        catch(int badegz)
+        {
+            cout << "Klaida: egzamino rezultatas turi buti tarp 1 ir 10\n";
+        }
     }
-    return egz;
+    return 0;
 }
 
 double ndVidurkis(vector<int> nd)
