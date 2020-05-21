@@ -4,6 +4,10 @@ int main()
 {
     char ipType;
     ipType = inputType();
+    if(ipType == 'r')
+        return 0;
+    if(ipType == 's')
+        return 0;
     Output(StudInput(ipType));
     return 0;
 }
@@ -11,15 +15,29 @@ int main()
 char inputType ()
 {
     char inputType;
-    cout << "Ar duomenys bus ivesti po viena ar nuskaitomi is failo?\nJei ivesite ranka iveskite: 'y', jei is failo: 'n'\n";
+    cout << "Jei norite ranka ivesti duomenis iveskte 'y'\n" <<
+            "Jei norite kad duomenys butu nuskaityti is failo iveskite 'n'\n" <<
+            "Jei norite kad duomenu failas butu sugeneruotas atsitiktiniais duomenimis iveskite 'r'\n" <<
+            "Jei norite iskaidyti studentu faila i islaikiusiu ir neislaikiusiu iveskite 's'\n";
+
     while(inputType || !inputType)
     {
         cin >> inputType;
         try
         {
-            if(inputType != 'y' && inputType != 'n')
+            if(inputType != 'y' && inputType != 'n' && inputType != 'r' && inputType != 's')
             {
                 throw inputType;
+            }
+            if(inputType == 'r')
+            {
+                fileGenerator();
+                return inputType;
+            }
+            if(inputType == 's')
+            {
+                fileSplit();
+                return inputType;
             }
             return inputType;
         }
@@ -28,6 +46,7 @@ char inputType ()
                 cout << "Klaida: iveskite 'y' jei duomenis ivesite ranka, jei jie bus nuskaitomi is failo: 'n'\n";
             }
     }
+
     return 0;
 }
 

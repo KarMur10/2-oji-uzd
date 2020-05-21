@@ -25,3 +25,5 @@ double ndVidurkis(vector<int> nd);
 double Mediana(vector<int> nd, double egz);
 double Galutinis(double vidurkis, int egz);
 void Output (vector<Studentas> Studentai);
+int fileGenerator();
+void fileSplit ();
