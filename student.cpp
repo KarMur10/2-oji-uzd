@@ -24,10 +24,13 @@ vector<Studentas> StudInput (char inputType)
     }
     else
     {
+        cout << "iveskite fail pavadinima\n";
+        string fileName;
+        cin >> fileName;
         int ndcount = 0, tempNd;
         string temp;
         ifstream file;
-        file.open("input.txt");
+        file.open(fileName);
         file >> vardas;
         file >> pavarde;
         while(temp != "Egz.")
@@ -49,6 +52,7 @@ vector<Studentas> StudInput (char inputType)
             }
             file >> egz;
             Studentai.push_back({vardas, pavarde, nd, egz});
+            nd.clear();
             if(file.eof()) break;
         }
         file.close();
