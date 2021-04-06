@@ -1,162 +1,90 @@
-#include "main.h"
+#include <iostream>
+#include <vector>
+#include <iomanip>
+#include <bits/stdc++.h>
+
+void inputVardai (std::vector<std::string> &vardas, std::vector<std::string> &pavarde);
+void pazymiai (std::vector<std::string> vardas, std::vector<std::string> pavarde, std::vector<double> &Galutinis, std::vector<double> &mediana);
+void output (std::vector<std::string> vardas, std::vector<std::string> pavarde, std::vector<double> Galutinis, std::vector<double> mediana);
+
 
 int main()
 {
-    char ipType;
-    ipType = inputType();
-    if(ipType == 'r')
-        return 0;
-    if(ipType == 's')
-        return 0;
-    Output(StudInput(ipType));
-    return 0;
-}
+    std::vector<std::string> vardas, pavarde;
+    inputVardai (vardas, pavarde);
 
-char inputType ()
-{
-    char inputType;
-    cout << "Jei norite ranka ivesti duomenis iveskte 'y'\n" <<
-            "Jei norite kad duomenys butu nuskaityti is failo iveskite 'n'\n" <<
-            "Jei norite kad duomenu failas butu sugeneruotas atsitiktiniais duomenimis iveskite 'r'\n" <<
-            "Jei norite iskaidyti studentu faila i islaikiusiu ir neislaikiusiu iveskite 's'\n";
+    std::vector<double> Galutinis, mediana;
+    pazymiai(vardas, pavarde, Galutinis, mediana);
 
-    while(inputType || !inputType)
-    {
-        cin >> inputType;
-        try
-        {
-            if(inputType != 'y' && inputType != 'n' && inputType != 'r' && inputType != 's')
-            {
-                throw inputType;
-            }
-            if(inputType == 'r')
-            {
-                fileGenerator();
-                return inputType;
-            }
-            if(inputType == 's')
-            {
-                fileSplit();
-                return inputType;
-            }
-            return inputType;
-        }
-            catch(char badInput)
-            {
-                cout << "Klaida: iveskite 'y' jei duomenis ivesite ranka, jei jie bus nuskaitomi is failo: 'n'\n";
-            }
-    }
+    output(vardas, pavarde, Galutinis, mediana);
 
     return 0;
 }
 
-int studentuSk ()
-{
-    int studSk;
-    cout << "Iveskite studentu skaiciu\n";
-    while(studSk || !studSk)
+void inputVardai (std::vector<std::string> &vardas, std::vector<std::string> &pavarde) {
+
+    std::string input1, input2;
+
+    std::cout << "Iveskite studentu varda ir pavarde\nBaigus ivedinet studentu vardus ir pavardes iveskite: Baigta\n";
+    while(input2 != "Baigta")
     {
-        cin >> studSk;
-        try
-        {
-            if(studSk < 1 || cin.fail())
-                throw studSk;
-            return studSk;
-        }
-        catch(int badSk)
-        {
-        cout << "Klaida: turite ivesti teigiama skaiciu\n";
-        }
+        std::cin >> input1;
+        if(input1 == "Baigta") break;
+        std::cin >> input2;
+        vardas.push_back(input1);
+        pavarde.push_back(input2);
     }
-    return 0;
 }
 
-vector<int> ndInput ()
-{
-    int tempnd;
-    vector<int> nd;
-    while(tempnd || !tempnd)
+void pazymiai (std::vector<std::string> vardas, std::vector<std::string> pavarde, std::vector<double> &Galutinis, std::vector<double> &mediana) {
+
+    int input = 1, egz, suma = 0;
+    std::vector<double> nd;
+
+    for(int a = 0; a < vardas.size(); a++)
     {
-        cin >> tempnd;
-        try
+        std::cout << "Iveskite atliktu namu darbu rezultatus 10-baleje sistemoje sio studento - " << vardas[a] << " " << pavarde[a] << ".\nIvedus visus namu darbu rezultatus iveskite 0\n";
+        while (input != 0)
         {
-            if(tempnd < 0 || tempnd > 10 || cin.fail())
-                throw tempnd;
-            if (tempnd == 0) break;
-            else nd.push_back(tempnd);
+            std::cin >> input;
+            if(input <= 10 && input >= 0)
+            {
+                if(input == 0) break;
+                nd.push_back(input);
+            }
+            else std::cout << "Ivestas skaicius nera 10-baleje sistemoje ir nebus pridetas prie skaiciavimu\n";
         }
-        catch(int badnd)
+        std::cout << "Iveskite sio studento egzamino rezultata\n";
+        while (egz != INT_MAX)
         {
-            cout << "Klaida: namu darbo rezultatas tur buti tarp 1 ir 10\n";
+            std::cin >> egz;
+            if(egz <= 10 && egz > 0) break;
+            else std::cout << "Ivestas skaicius nera 10-baleje sistemoje" << std::endl;
         }
-    }
-    return nd;
-}
-
-int egzInput()
-{
-    int egz;
-    while(egz || !egz)
-    {
-        cin >> egz;
-        try
+        for(int i = 0; i < nd.size(); i++)
         {
-            if(egz < 1 || egz > 10 || cin.fail())
-                throw egz;
-            return egz;
+            suma += nd[i];
         }
-        catch(int badegz)
+        Galutinis.push_back(0.4 * (suma / nd.size()) + 0.6 * egz);
+        std::sort(nd.begin(), nd.end());
+        if(nd.size() % 2 == 0)
         {
-            cout << "Klaida: egzamino rezultatas turi buti tarp 1 ir 10\n";
+            mediana.push_back((nd[nd.size()/2] + nd[nd.size()/2-1])/2);
         }
+        else mediana.push_back(nd[nd.size()/2]);
+        nd.clear();
+        suma = 0;
+        input = 1;
     }
-    return 0;
 }
 
-double ndVidurkis(vector<int> nd)
-{
-    int suma = 0;
-    double vidurkis;
-    for(int i = 0; i < nd.size(); i++)
-    {
-        suma += nd[i];
-    }
-    vidurkis = suma / nd.size();
-    return vidurkis;
-}
+void output (std::vector<std::string> vardas, std::vector<std::string> pavarde, std::vector<double> Galutinis, std::vector<double> mediana) {
 
-double Mediana(vector<int> nd, double egz)
-{
-    double mediana;
-    if(nd.size() == 1)
+    std::cout << std::setw(12) << "VARDAS" << std::setw(15) << "PAVARDE" << std::setw(15) << "GALUTINIS" << std::setw(15) << "MEDIANA" << std::endl;
+    std::cout << "----------------------------------------------------------" << std::endl;
+    for(int g = 0; g < vardas.size(); g++)
     {
-        mediana = (nd[0] + egz) / 2;
+        std::cout << std::setw(12) << vardas[g] << std::setw(15) << pavarde[g] << std::setw(15) << std::fixed << std::setprecision(2) << Galutinis[g] << std::setw(15) << mediana[g] << std::endl;
     }
-    else if ((nd.size() + 1) % 2 == 0)
-    {
-         mediana = (nd[((nd.size() + 1) / 2) - 1] + nd[(nd.size() + 1) / 2]) / 2;
-    }
-    else
-    {
-        mediana = nd[nd.size() / 2];
-    }
-    return mediana;
-}
 
-double Galutinis(double vidurkis, int egz)
-{
-    double galutinis;
-    galutinis = 0.4 * vidurkis + 0.6 * egz;
-    return galutinis;
-}
-
-void Output (vector<Studentas> Studentai)
-{
-    cout << setw(12) << "VARDAS" << setw(15) << "PAVARDE" << setw(15) << "GALUTINIS" << setw(15) << "MEDIANA" << endl;
-    cout << "----------------------------------------------------------" << endl;
-    for(int i = 0; i < Studentai.size(); i++)
-    {
-
-        cout << setw(12) << Studentai[i].vardas << setw(15) << Studentai[i].pavarde << setw(15) << fixed << setprecision(2) << Galutinis(ndVidurkis(Studentai[i].nd), Studentai[i].egz) << setw(15) << Mediana(Studentai[i].nd, Studentai[i].egz) << endl;
-    }
 }
